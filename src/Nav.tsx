@@ -29,7 +29,7 @@ export default function Nav() {
         <div>
           <Image
             className="sm:hidden"
-            src="./menu.svg"
+            src="./icon-menu.svg"
             alt="logo"
             width={30}
             height={30}
