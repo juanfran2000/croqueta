@@ -19,6 +19,7 @@ export default function Nav({ elements }: Props) {
             <Image src="./logo.svg" alt="logo" width={30} height={30}></Image>
           </a>
           <ul className="space-x-12  pl-10 hidden sm:flex">
+
             {elements.slice(0, 3).map((element, index) => {
               return (
                 <li key={index}>
@@ -26,6 +27,7 @@ export default function Nav({ elements }: Props) {
                 </li>
               );
             })}
+
           </ul>
         </div>
         <div>
@@ -49,7 +51,7 @@ export default function Nav({ elements }: Props) {
       <div
         className={`sm:hidden ${
           isOpen ? "block" : "hidden"
-        } from bg-gradient-to-b from-white/70 to-black/70  w-full h-full absolute`}
+        } from bg-gradient-to-b from-white/70 to-black/70  w-full h-full absolute z-10`}
       >
         <ul className="flex flex-col justify-center items-center absolute  inset-x-0 top-24 p-12 bg-white w-[90%] mx-auto rounded-md gap-5">
           {elements.map((element, index) => {
