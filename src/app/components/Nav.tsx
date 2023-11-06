@@ -2,7 +2,11 @@
 import Image from "next/image";
 import { useState } from "react";
 
-export default function Nav() {
+type Props = {
+  elements: { url: string; name: string }[];
+};
+
+export default function Nav({ elements }: Props) {
   let [isOpen, setIsOpen] = useState(false);
   let toggle = () => {
     setIsOpen(!isOpen);
@@ -15,15 +19,15 @@ export default function Nav() {
             <Image src="./logo.svg" alt="logo" width={30} height={30}></Image>
           </a>
           <ul className="space-x-12  pl-10 hidden sm:flex">
-            <li>
-              <a href="#">Inicio</a>
-            </li>
-            <li>
-              <a href="#">Tienda</a>
-            </li>
-            <li>
-              <a href="#">Mascotas</a>
-            </li>
+
+            {elements.slice(0, 3).map((element, index) => {
+              return (
+                <li key={index}>
+                  <a href={element.url}>{element.name}</a>
+                </li>
+              );
+            })}
+
           </ul>
         </div>
         <div>
@@ -35,7 +39,13 @@ export default function Nav() {
             height={30}
             onClick={toggle}
           ></Image>
-          <a className="hidden sm:block">login</a>
+          {elements.slice(elements.length - 1).map((link, index) => {
+            return (
+              <a className="hidden sm:block" href={link.url} key={index}>
+                {link.name}
+              </a>
+            );
+          })}
         </div>
       </nav>
       <div
@@ -44,15 +54,13 @@ export default function Nav() {
         } from bg-gradient-to-b from-white/70 to-black/70  w-full h-full absolute z-10`}
       >
         <ul className="flex flex-col justify-center items-center absolute  inset-x-0 top-24 p-12 bg-white w-[90%] mx-auto rounded-md gap-5">
-          <li>
-            <a href="#">Inicio</a>
-          </li>
-          <li>
-            <a href="#">Tienda</a>
-          </li>
-          <li>
-            <a href="#">Mascotas</a>
-          </li>
+          {elements.map((element, index) => {
+            return (
+              <li key={index}>
+                <a href={element.url}>{element.name}</a>
+              </li>
+            );
+          })}
         </ul>
       </div>
     </div>
