@@ -16,13 +16,13 @@ export default function Nav() {
           </a>
           <ul className="space-x-12  pl-10 hidden sm:flex">
             <li>
-              <a>Inicio</a>
+              <a href="#">Inicio</a>
             </li>
             <li>
-              <a>Tienda</a>
+              <a href="#">Tienda</a>
             </li>
             <li>
-              <a>Mascotas</a>
+              <a href="#">Mascotas</a>
             </li>
           </ul>
         </div>
@@ -41,7 +41,7 @@ export default function Nav() {
       <div
         className={`sm:hidden ${
           isOpen ? "block" : "hidden"
-        } from bg-gradient-to-b from-white/70 to-black/70  w-full h-full absolute`}
+        } from bg-gradient-to-b from-white/70 to-black/70  w-full h-full absolute z-10`}
       >
         <ul className="flex flex-col justify-center items-center absolute  inset-x-0 top-24 p-12 bg-white w-[90%] mx-auto rounded-md gap-5">
           <li>
