@@ -13,9 +13,9 @@ const inter = Inter({ subsets: ["latin"] });
 
 //Data Nav
 const elementsNav = [
-  { url: "#", name: "Inicio" },
+  { url: "/", name: "Inicio" },
   { url: "#", name: "Tienda" },
-  { url: "#", name: "Mascotas" },
+  { url: "./pets", name: "Mascotas" },
   { url: "#", name: "Login" },
 ];
 
