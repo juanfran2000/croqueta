@@ -67,6 +67,8 @@ let socialElements = [
   },
 ];
 
+const logo = { url: "./logo-text.svg", alt: "logo footer", link: "#" };
+
 export default function RootLayout({
   children,
 }: {
@@ -80,7 +82,12 @@ export default function RootLayout({
         </header>
         <main className="min-h-screen mt-16">{children}</main>
         <footer className="mt-auto">
-          <Footer elements={elementsFooter} socialElements={socialElements} />
+          <Footer
+            elements={elementsFooter}
+            socialElements={socialElements}
+            logo={logo}
+            mail="@croqueta/ecu/arg"
+          />
         </footer>
       </body>
     </html>

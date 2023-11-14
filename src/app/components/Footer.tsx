@@ -9,17 +9,16 @@ type Props = {
     iconUrl: string;
     className: string;
   }[];
+  logo: { url: string; alt: string; link: string };
+  mail: string;
 };
 
-let logo = [{ url: "./logo-text.svg", alt: "logo footer", link: "#" }];
-let mail = [{ text: "@croqueta/ecu/arg" }];
-
-const Footer = ({ elements, socialElements }: Props) => {
+const Footer = ({ elements, socialElements, logo, mail }: Props) => {
   return (
     <div className="bg-blue-500 w-full h-[400px] flex flex-col justify-center md:h-[300px] text-white">
       <div className="md:h-[70px] mx-10 flex flex-col items-center justify-start md:flex md:justify-between md:items-center md:flex-row h-32 ">
         <div className="w-[200px]">
-          <ul className="justify-between hidden  md:flex ">
+          <ul className="justify-between hidden md:flex ">
             {socialElements.slice(0, 3).map((icon, index) => {
               return (
                 <li
@@ -40,18 +39,14 @@ const Footer = ({ elements, socialElements }: Props) => {
           </ul>
         </div>
         <div className=" w-[200px]  md:flex ">
-          {logo.map((img, index) => {
-            return (
-              <a href={img.link} key={index}>
-                <Image
-                  src={img.url}
-                  alt={img.alt}
-                  width={200}
-                  height={200}
-                ></Image>
-              </a>
-            );
-          })}
+          <a href={logo.link}>
+            <Image
+              src={logo.url}
+              alt={logo.alt}
+              width={200}
+              height={200}
+            ></Image>
+          </a>
         </div>
         <div className="w-[200px] ">
           <ul className="flex justify-between mt-6 md:mt-0">
@@ -89,13 +84,7 @@ const Footer = ({ elements, socialElements }: Props) => {
               );
             })}
           </ul>
-          {mail.map((info, index) => {
-            return (
-              <h4 className="mt-6" key={index}>
-                {info.text}
-              </h4>
-            );
-          })}
+          <h4 className="mt-6">{mail}</h4>
         </div>
       </div>
     </div>
