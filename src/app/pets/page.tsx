@@ -12,77 +12,65 @@ const itemsList = [
 ];
 
 export default function Pets() {
-  let [pet, setPet] = useState("");
-  let [race, setRace] = useState("");
+  let [name, setName] = useState("");
+  let [breed, setBreed] = useState("");
   let [years, setYears] = useState("");
   let [sex, setSex] = useState("");
-  let [id, setId] = useState(0);
+  let [id, setId] = useState();
   // modals
   let [isOpen, setIsOpen] = useState(false);
-  let [addPet, setAddPet] = useState(false);
+  let [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   let [editPet, setEditPet] = useState(false);
 
-  const [screen, setScreen] = useState<any[]>([]);
+  const [pets, setPets] = useState<any[]>([]);
 
   let create = () => {
-    if (
-      // Verificar si algun input esta vacio
-      pet.trim() !== "" &&
-      race.trim() !== "" &&
-      years.trim() !== "" &&
-      sex.trim() !== ""
-    ) {
-      const newPet = {
-        id: screen.length + 1,
-        name: pet,
-        race,
-        years,
-        sex,
-      };
-      setScreen([...screen, newPet]);
-      // limpiamos nuetros inputs al agregar una tarea
-      setPet("");
-      setRace("");
-      setYears("");
-      setSex("");
-    }
+    // Verificar si algun input esta vacio
+    const newPet = {
+      id: Math.floor(Math.random() * 100),
+      name,
+      breed,
+      years,
+      sex,
+    };
+    setPets([...pets, newPet]);
+    // limpiamos nuetros inputs al agregar una tarea
+    clearFields();
+    setIsCreateModalOpen(false);
   };
 
-  let deleted = (id: number) => {
-    const petToDelete = screen.find((pet) => pet.id === id);
+  let deleted = () => {
+    const newPetsArray = pets.filter((pet) => pet.id !== id);
 
-    if (petToDelete) {
-      // Filtrar la lista para eliminar el elemento
-      const newscreen = screen.filter((pet) => pet.id !== id);
+    setPets(newPetsArray);
+    setIsOpen(false);
+    setId(undefined);
+  };
 
-      // Actualizar los id de los elementos restantes en la lista
-      for (let i = 0; i < newscreen.length; i++) {
-        newscreen[i].id = i + 1;
+  const clearFields = () => {
+    setName("");
+    setBreed("");
+    setYears("");
+    setSex("");
+  };
+
+  const update = () => {
+    const newPetsArray = pets.map((pet) => {
+      if (pet.id === id) {
+        return { id, name, breed, years, sex };
+      } else {
+        return pet;
       }
+    });
 
-      setScreen(newscreen);
-    }
+    setPets(newPetsArray);
+    setIsCreateModalOpen(false);
+    setTimeout(() => {
+      setId(undefined);
+    }, 1000);
+    clearFields();
   };
-
-  const update = (index: number) => {
-    const updatedscreen = [...screen];
-    const editedPet = { ...updatedscreen[index] };
-
-    editedPet.name = pet;
-    editedPet.race = race;
-    editedPet.years = years;
-    editedPet.sex = sex;
-
-    if (editedPet.name !== null) {
-      updatedscreen[index] = editedPet;
-      setScreen(updatedscreen);
-      setPet("");
-      setRace("");
-      setYears("");
-      setSex("");
-    }
-  };
-
+  console.log(pets);
   return (
     <div className="px-2 py-4 sm:px-10 sm:py-10 md:px-16 lg:px-20">
       <div className=" flex flex-col justify-center items-center sm:flex sm:flex-row  sm:justify-between">
@@ -92,7 +80,7 @@ export default function Pets() {
         <button
           className="mt-4 sm:mt-0 relative inline-flex items-center justify-center p-4 px-6 py-3 overflow-hidden font-medium text-indigo-600 transition duration-300 ease-out border-2 border-blue-500 rounded-full shadow-md group"
           onClick={() => {
-            setAddPet(!addPet);
+            setIsCreateModalOpen(!isCreateModalOpen);
           }}
         >
           <span className="absolute inset-0 flex items-center justify-center w-full h-full text-white duration-300 -translate-x-full bg-blue-500 group-hover:translate-x-0 ease">
@@ -131,20 +119,24 @@ export default function Pets() {
             </tr>
           </thead>
           <tbody>
-            {screen.map((content, index) => {
+            {pets.map((pet, index) => {
               return (
-                <tr className="divide-y divide-gray-200" key={content.id}>
+                <tr className="divide-y divide-gray-200" key={pet.id}>
                   <td className="py-2 px-4 text-center">{index + 1}</td>
                   {/* index +1 hace que el valor se actulice y se organice la list */}
-                  <td className="py-2 px-4 text-center">{content.name}</td>
-                  <td className="py-2 px-4 text-center">{content.race}</td>
-                  <td className="py-2 px-4 text-center">{content.years}</td>
-                  <td className="py-2 px-4 text-center">{content.sex}</td>
+                  <td className="py-2 px-4 text-center">{pet.name}</td>
+                  <td className="py-2 px-4 text-center">{pet.breed}</td>
+                  <td className="py-2 px-4 text-center">{pet.years}</td>
+                  <td className="py-2 px-4 text-center">{pet.sex}</td>
                   <td className="py-2 px-4 text-center flex flex-col justify-center items-center gap-2 sm:flex-row">
                     <button
                       onClick={() => {
-                        setEditPet(!editPet);
-                        setId(index);
+                        setId(pet.id);
+                        setName(pet.name);
+                        setBreed(pet.breed);
+                        setYears(pet.years);
+                        setSex(pet.sex);
+                        setIsCreateModalOpen(true);
                       }}
                     >
                       <span className="flex py-1 px-4 border-2 border-blue-500 rounded-full shadow-md hover:scale-105 transition-all">
@@ -154,7 +146,7 @@ export default function Pets() {
                     <button
                       onClick={() => {
                         setIsOpen(!isOpen);
-                        setId(content.id);
+                        setId(pet.id);
                       }}
                     >
                       <span className="flex py-1 px-4 border-blue-500 rounded-full shadow-md border-2 hover:scale-105 transition-all">
@@ -167,6 +159,7 @@ export default function Pets() {
             })}
           </tbody>
         </table>
+        {/* modal para borrar */}
         <Modal
           isOpen={isOpen}
           closeModal={() => {
@@ -185,6 +178,7 @@ export default function Pets() {
               className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
               onClick={() => {
                 setIsOpen(!isOpen);
+                clearFields();
               }}
             >
               No, lo pensé mejor !
@@ -194,190 +188,116 @@ export default function Pets() {
               className="inline-flex justify-center rounded-md border border-transparent bg-red-100 px-4 py-2 text-sm font-medium text-red-900 hover:bg-red-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 ml-4"
               onClick={() => {
                 setIsOpen(!isOpen);
-                deleted(id);
+                deleted();
               }}
             >
               Si, eliminar !
             </button>
           </div>
         </Modal>
+        {/* modal para crear/editar */}
         <Modal
-          isOpen={addPet}
+          isOpen={isCreateModalOpen}
           closeModal={() => {
-            setAddPet(false);
+            setIsCreateModalOpen(false);
           }}
         >
-          <h3>Agrega tu mascota !</h3>
-          <div className="mt-2">
-            <p className="text-sm text-gray-500">
-              Si no completas todos los espacios no se agregará.
-            </p>
-            <div>
-              <div className="flex flex-col mt-4">
-                <h2>Nombre de tu mascota:</h2>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (id) {
+                update();
+              } else {
+                create();
+              }
+            }}
+          >
+            <h3>Agrega tu mascota !</h3>
+            <div className="mt-2">
+              <p className="text-sm text-gray-500">
+                Si no completas todos los espacios no se agregará.
+              </p>
+              <div>
+                <div className="flex flex-col mt-4">
+                  <h2>Nombre de tu mascota:</h2>
+                  <input
+                    type="text"
+                    className="border border-blue-700 mt-2 pl-2 rounded-lg"
+                    placeholder="Lucas"
+                    onChange={(e) => {
+                      setName(e.target.value);
+                    }}
+                    required
+                    value={name}
+                  />
+                </div>
+              </div>
+              <div className="flex flex-col mt-2">
+                <h2>Raza de tu mascota:</h2>
                 <input
                   type="text"
                   className="border border-blue-700 mt-2 pl-2 rounded-lg"
-                  placeholder="Lucas"
+                  placeholder="Golden"
+                  required
                   onChange={(e) => {
-                    setPet(e.target.value);
+                    setBreed(e.target.value);
                   }}
-                  value={pet}
+                  value={breed}
                 />
               </div>
+              <div className="flex flex-col mt-2 ">
+                <h2>Edad de tu mascota:</h2>
+                <input
+                  type="number"
+                  className="border border-blue-700 mt-2 pl-2 rounded-lg"
+                  placeholder="5"
+                  required
+                  onChange={(e) => {
+                    setYears(e.target.value);
+                  }}
+                  min="0"
+                  max="50"
+                  value={years}
+                />
+              </div>
+              <div className="flex flex-col mt-2">
+                <h2>Sexo de tu mascota:</h2>
+                <select
+                  className="border border-blue-700 mt-2 pl-2
+                  rounded-lg"
+                  required
+                  onChange={(e) => {
+                    setSex(e.target.value);
+                  }}
+                  value={sex}
+                >
+                  <option value="" disabled hidden>
+                    Seleccionar una opción
+                  </option>
+                  <option>Macho</option>
+                  <option>Hembra</option>
+                </select>
+              </div>
             </div>
-            <div className="flex flex-col mt-2">
-              <h2>Raza de tu mascota:</h2>
-              <input
-                type="text"
-                className="border border-blue-700 mt-2 pl-2 rounded-lg"
-                placeholder="Golden"
-                onChange={(e) => {
-                  setRace(e.target.value);
-                }}
-                value={race}
-              />
-            </div>
-            <div className="flex flex-col mt-2 ">
-              <h2>Edad de tu mascota:</h2>
-              <input
-                type="number"
-                className="border border-blue-700 mt-2 pl-2 rounded-lg"
-                placeholder="5"
-                onChange={(e) => {
-                  setYears(e.target.value);
-                }}
-                value={years}
-              />
-            </div>
-            <div className="flex flex-col mt-2">
-              <h2>Sexo de tu mascota:</h2>
-              <input
-                type="text"
-                className="border border-blue-700 mt-2 pl-2 rounded-lg"
-                placeholder="Macho/Hembra"
-                onChange={(e) => {
-                  setSex(e.target.value);
-                }}
-                value={sex}
-              />
-            </div>
-          </div>
-          <div className="mt-8 flex">
-            <button
-              type="button"
-              className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-              onClick={() => {
-                setAddPet(!addPet);
-              }}
-            >
-              No, lo pensé mejor !
-            </button>
-            <button
-              type="button"
-              className="inline-flex justify-center rounded-md border border-transparent bg-green-100 px-4 py-2 text-sm font-medium text-green-900 hover:bg-green-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 ml-4"
-              onClick={() => {
-                setAddPet(!addPet);
-                create();
-              }}
-            >
-              Si, agregar!
-            </button>
-          </div>
-        </Modal>
-        <Modal
-          isOpen={editPet}
-          closeModal={() => {
-            setEditPet(false);
-          }}
-        >
-          <h3>Esta a punto de editar tu mascota!</h3>
-          <div className="mt-2">
-            <p className="text-sm text-gray-500">
-              los cambios serán permanentes.
-            </p>
-            {screen.map((obj, index) => {
-              if (index === id) {
-                return (
-                  <div key={index}>
-                    <div>
-                      <div className="flex flex-col mt-4">
-                        <h2>Nombre de tu mascota:</h2>
-                        <input
-                          type="text"
-                          className="border border-blue-700 mt-2 pl-2 rounded-lg"
-                          placeholder={obj.name}
-                          onChange={(e) => {
-                            setPet(e.target.value);
-                          }}
-                          value={pet}
-                        />
-                      </div>
-                    </div>
-                    <div className="flex flex-col mt-2">
-                      <h2>Raza de tu mascota:</h2>
-                      <input
-                        type="text"
-                        className="border border-blue-700 mt-2 pl-2 rounded-lg"
-                        placeholder={obj.race}
-                        onChange={(e) => {
-                          setRace(e.target.value);
-                        }}
-                        value={race}
-                      />
-                    </div>
-                    <div className="flex flex-col mt-2 ">
-                      <h2>Edad de tu mascota:</h2>
-                      <input
-                        type="number"
-                        className="border border-blue-700 mt-2 pl-2 rounded-lg"
-                        placeholder={obj.years}
-                        onChange={(e) => {
-                          setYears(e.target.value);
-                        }}
-                        value={years}
-                      />
-                    </div>
-                    <div className="flex flex-col mt-2">
-                      <h2>Sexo de tu mascota:</h2>
-                      <input
-                        type="text"
-                        className="border border-blue-700 mt-2 pl-2 rounded-lg"
-                        placeholder={obj.sex}
-                        onChange={(e) => {
-                          setSex(e.target.value);
-                        }}
-                        value={sex}
-                      />
-                    </div>
-                  </div>
-                );
-              }
-              return null; // No renderizar nada para otras mascotas
-            })}
-
             <div className="mt-8 flex">
               <button
                 type="button"
                 className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                 onClick={() => {
-                  setEditPet(!editPet);
+                  clearFields();
+                  setIsCreateModalOpen(!isCreateModalOpen);
                 }}
               >
                 No, lo pensé mejor !
               </button>
               <button
-                type="button"
+                type="submit"
                 className="inline-flex justify-center rounded-md border border-transparent bg-green-100 px-4 py-2 text-sm font-medium text-green-900 hover:bg-green-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 ml-4"
-                onClick={() => {
-                  setEditPet(!editPet);
-                  update(id);
-                }}
               >
-                Si, Editar!
+                {id ? `si, Editar` : `si, Agregar!`}
               </button>
             </div>
-          </div>
+          </form>
         </Modal>
       </div>
     </div>
